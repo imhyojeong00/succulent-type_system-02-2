@@ -4,15 +4,17 @@
    ===================================================================== */
 
 :root {
-  --green: rgb(60, 150, 80);
-  --green-soft: rgba(60, 150, 80, 0.22);
-  --green-faint: rgba(60, 150, 80, 0.07);
-  --ink: #1f241f;
-  --ink-2: rgba(31, 36, 31, 0.62);
-  --line: rgba(31, 36, 31, 0.12);
+  /* 흑백만 쓴다 — 버튼·글자·선 모두 검정, 바탕은 흰색 */
+  --green: #000000;            /* (이름만 남은 변수: 이제 검정) */
+  --green-soft: rgba(0, 0, 0, 0.22);
+  --green-faint: rgba(0, 0, 0, 0.06);
+  --ink: #000000;
+  --ink-2: rgba(0, 0, 0, 0.6);
+  --line: rgba(0, 0, 0, 0.12);
   --paper: #ffffff;
-  --mono: "Courier New", Courier, monospace;
-  --sans: "Helvetica Neue", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", Arial, sans-serif;
+  /* 서체는 기기의 기본 서체 */
+  --mono: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --safe-t: env(safe-area-inset-top, 0px);
   --safe-b: env(safe-area-inset-bottom, 0px);
 }
@@ -43,8 +45,9 @@ button { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent
   transition: background 0.15s, color 0.15s, opacity 0.15s;
 }
 .pill:hover { border-color: rgba(31, 36, 31, 0.3); }
-.pill.green { background: var(--green); border-color: var(--green); color: #fff; }
-.pill.green:hover { background: rgb(48, 128, 66); }
+.pill.primary { background: #000; border-color: #000; color: #fff; }
+.pill.primary:hover { background: #333; border-color: #333; }
+.pill.primary:disabled { background: #fff; color: rgba(0, 0, 0, 0.35); border-color: rgba(0, 0, 0, 0.2); }
 .pill:disabled { opacity: 0.32; cursor: default; }
 .pill.wide { width: 100%; padding: 13px 16px; font-size: 15px; }
 .pill:focus-visible, .icon-btn:focus-visible, .key:focus-visible, #drawer button:focus-visible {
@@ -244,7 +247,8 @@ button { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent
   box-shadow: 0 20px 60px rgba(30, 60, 36, 0.12);
   font-family: var(--sans);
   color: var(--ink);
-  word-break: keep-all;
+  word-break: normal;
+  line-break: strict;
   overflow-wrap: break-word;
 }
 
@@ -334,7 +338,7 @@ button { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent
 .field input:focus { border-bottom-color: var(--green); }
 #send-status { margin: 12px 0 0; min-height: 1em; font-size: 13px; line-height: 1.55; }
 #send-status.ok { color: var(--green); }
-#send-status.err { color: #b3412f; }
+#send-status.err { color: #000; text-decoration: underline; }
 
 /* ---------- 토스트 ---------- */
 #toast {
@@ -397,7 +401,8 @@ body.garden-mode #ui-layer { display: none; }
   line-height: 1.6;
   color: var(--ink);
   text-align: center;
-  word-break: keep-all;
+  word-break: normal;
+  line-break: strict;
 }
 #garden-note:empty { display: none; }
 #garden-note b { color: var(--green); font-weight: 600; }

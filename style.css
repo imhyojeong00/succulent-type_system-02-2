@@ -44,7 +44,7 @@ body {
   font-size: 19px;
   font-weight: 100;
   line-height: 1;
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   cursor: pointer;
   z-index: 10000003;
   transition: opacity 0.2s, transform 0.2s, color 0.2s;
@@ -56,7 +56,7 @@ body {
 }
 
 #coord-toggle.active {
-  color: rgba(60, 150, 80, 0.72);
+  color: rgba(0, 0, 0, 0.72);
 }
 
 #coord-layer {
@@ -76,7 +76,7 @@ body {
 
 .coord-line {
   position: absolute;
-  background: rgba(60, 150, 80, 0.16);
+  background: rgba(0, 0, 0, 0.16);
   z-index: 101;
 }
 
@@ -91,14 +91,14 @@ body {
 }
 
 .coord-axis {
-  background: rgba(60, 150, 80, 0.45);
+  background: rgba(0, 0, 0, 0.45);
 }
 
 .coord-label {
   position: absolute;
-  color: rgba(60, 150, 80, 0.62);
+  color: rgba(0, 0, 0, 0.62);
   font-size: 9px;
-  font-family: "Courier New", monospace;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   user-select: none;
   z-index: 102;
 }
@@ -124,7 +124,7 @@ input {
   outline: none;
   width: 250px;
   text-align: center;
-  font-family: "Courier New", monospace;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   letter-spacing: 1px;
 }
 
@@ -132,7 +132,7 @@ input {
   font-size: 11px;
   color: #888888;
   margin-top: 5px;
-  font-family: "Courier New", monospace;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   display: flex;
   justify-content: center;
   align-items: baseline;
@@ -152,7 +152,7 @@ input {
   padding: 0;
   cursor: pointer;
   transition: color 0.2s;
-  font-family: "Courier New", monospace;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 #decode-btn:hover,
@@ -180,7 +180,7 @@ input {
   outline: none;
   color: rgba(0, 0, 0, 0.38);
   font-size: 17px;
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-weight: 100;
   line-height: 1;
   cursor: pointer;
@@ -195,7 +195,7 @@ input {
 
 #growth-map-btn.active,
 #growth-xray-btn.active {
-  color: rgba(60, 150, 80, 0.82);
+  color: rgba(0, 0, 0, 0.82);
 }
 
 #growth-map-panel {
@@ -207,7 +207,7 @@ input {
   z-index: 10000004;
   background: rgba(255, 255, 255, 0.86);
   backdrop-filter: blur(4px);
-  border: 1px solid rgba(60, 150, 80, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 14px;
   padding: 12px;
   display: none;
@@ -222,7 +222,7 @@ input {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-family: "Courier New", monospace;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 12px;
   color: rgba(0, 0, 0, 0.72);
   margin-bottom: 8px;
@@ -236,19 +236,19 @@ input {
 
 #growth-map-svg line,
 #growth-map-svg path {
-  stroke: rgba(60, 150, 80, 0.42);
+  stroke: rgba(0, 0, 0, 0.42);
   stroke-width: 1.15;
   fill: none;
 }
 
 #growth-map-svg circle {
-  fill: rgba(60, 150, 80, 0.84);
+  fill: rgba(0, 0, 0, 0.84);
 }
 
 #growth-map-svg text {
-  fill: rgba(60, 150, 80, 0.78);
+  fill: rgba(0, 0, 0, 0.78);
   font-size: 11px;
-  font-family: "Courier New", monospace;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 #receipt-panel {
@@ -275,7 +275,7 @@ input {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-family: "Courier New", monospace;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 12px;
   color: rgba(0, 0, 0, 0.72);
   margin-bottom: 10px;
@@ -288,13 +288,13 @@ input {
   font-size: 10px;
   line-height: 1.55;
   color: rgba(0, 0, 0, 0.72);
-  font-family: "Courier New", monospace;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 #receipt-download {
   margin-top: 10px;
   font-size: 10px;
-  color: rgba(60, 150, 80, 0.8);
+  color: rgba(0, 0, 0, 0.8);
 }
 
 /* =======================================================
@@ -433,14 +433,14 @@ input {
 .growth-skeleton line,
 .growth-skeleton circle,
 .growth-skeleton ellipse {
-  stroke: rgba(60, 150, 80, 0.78);
+  stroke: rgba(0, 0, 0, 0.78);
   stroke-width: 1.35;
   fill: none;
   vector-effect: non-scaling-stroke;
 }
 
 .growth-skeleton .growth-point {
-  fill: rgba(60, 150, 80, 0.98);
+  fill: rgba(0, 0, 0, 0.98);
   stroke: none;
 }
 
@@ -475,14 +475,14 @@ body.xray-active #growth-branch-layer {
 #growth-branch-layer ellipse,
 #growth-branch-layer circle {
   fill: none !important;
-  stroke: rgb(60, 150, 80) !important;
+  stroke: rgb(0, 0, 0) !important;
   stroke-width: 1.5px !important;
   vector-effect: non-scaling-stroke !important;
 }
 
 /* L-system 구조 상 성장의 결절점이 되는 내부 코어 점들을 초록색 면으로 가득 채움 */
 #growth-branch-layer .growth-dot {
-  fill: rgb(60, 150, 80) !important;
+  fill: rgb(0, 0, 0) !important;
   stroke: none !important;
 }
 
@@ -568,10 +568,10 @@ body.xray-active #growth-branch-layer {
   z-index: 9000000;
   pointer-events: none;
   background:
-    radial-gradient(38vmax 30vmax at 18% 22%, rgba(74, 104, 66, 0.075), transparent 70%),
-    radial-gradient(30vmax 26vmax at 78% 16%, rgba(74, 104, 66, 0.06), transparent 70%),
-    radial-gradient(34vmax 28vmax at 64% 82%, rgba(74, 104, 66, 0.055), transparent 70%),
-    radial-gradient(120vmax 90vmax at 50% 45%, transparent 62%, rgba(40, 62, 38, 0.055) 100%);
+    radial-gradient(38vmax 30vmax at 18% 22%, rgba(0, 0, 0, 0.075), transparent 70%),
+    radial-gradient(30vmax 26vmax at 78% 16%, rgba(0, 0, 0, 0.06), transparent 70%),
+    radial-gradient(34vmax 28vmax at 64% 82%, rgba(0, 0, 0, 0.055), transparent 70%),
+    radial-gradient(120vmax 90vmax at 50% 45%, transparent 62%, rgba(0, 0, 0, 0.055) 100%);
   animation: canopyDrift 46s ease-in-out infinite alternate;
   will-change: transform;
 }

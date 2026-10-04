@@ -110,7 +110,7 @@
     const now = Date.now();
     if (now - lastLatinWarn < 4000) return;
     lastLatinWarn = now;
-    toast("영문 자판(A–Z)으로 바꿔서 입력해 주세요");
+    toast("英字キーボード（A〜Z）に切り替えて入力してください");
   };
 
   // =====================================================================
@@ -131,7 +131,7 @@
     mutant: () => { clickCore("decode-btn"); syncDrawer(); },
     coord: () => { clickCore("coord-toggle"); syncDrawer(); },
     receipt: () => { closeOverlay($("drawer"), true); clickCore("receipt-btn"); },
-    save: () => { closeOverlay($("drawer"), true); toast("이미지를 만드는 중… 잠시 기다려 주세요", 3500); clickCore("save-btn"); },
+    save: () => { closeOverlay($("drawer"), true); toast("画像をつくっています… 少しお待ちください", 3500); clickCore("save-btn"); },
     sound: () => { setMuted(!window.SOUND_MUTED); syncDrawer(); },
     reset: () => resetSoil(),
   };
@@ -150,8 +150,8 @@
     set("mutant", stageEl.classList.contains("only-mutant-view"));
     set("coord", $("coord-layer") && $("coord-layer").classList.contains("show"));
     set("map", $("growth-map-panel").classList.contains("show"));
-    set("sound", false, window.SOUND_MUTED ? "소리 켜기" : "소리 끄기");
-    set("garden", gardenActive, gardenActive ? "내 다육이로 돌아가기" : "모두의 정원");
+    set("sound", false, window.SOUND_MUTED ? "音を出す" : "音を消す");
+    set("garden", gardenActive, gardenActive ? "自分の多肉へ戻る" : "みんなの庭");
   }
 
   // ---------- 소리 ----------
@@ -197,8 +197,8 @@
         b.type = "button";
         b.className = "key";
         b.dataset.key = k;
-        if (k === "⌫") { b.classList.add("key-fn", "key-back"); b.setAttribute("aria-label", "지우기"); }
-        else if (k === "↵") { b.classList.add("key-fn", "key-enter"); b.textContent = "줄 바꾸기 ↵"; b.setAttribute("aria-label", "줄 바꾸기"); }
+        if (k === "⌫") { b.classList.add("key-fn", "key-back"); b.setAttribute("aria-label", "消す"); }
+        else if (k === "↵") { b.classList.add("key-fn", "key-enter"); b.textContent = "改行 ↵"; b.setAttribute("aria-label", "改行"); }
         else if (k === "123" || k === "ABC") { b.classList.add("key-fn", "key-page"); }
         if (!b.textContent) b.textContent = k;
         r.appendChild(b);
@@ -282,8 +282,8 @@
   function setKbdCollapsed(c) {
     kbdCollapsed = c;
     document.body.classList.toggle("kbd-collapsed", c);
-    $("kbd-toggle").textContent = c ? "자판 펴기" : "자판 접기";
-    $("kbd-toggle").setAttribute("aria-label", c ? "자판 펴기" : "자판 접기");
+    $("kbd-toggle").textContent = c ? "キーボードを開く" : "キーボードを閉じる";
+    $("kbd-toggle").setAttribute("aria-label", c ? "キーボードを開く" : "キーボードを閉じる");
     requestAnimationFrame(updateInsets);
   }
 
@@ -296,7 +296,7 @@
     if (!visibleText(seq)) {
       const ph = document.createElement("span");
       ph.className = "ph";
-      ph.textContent = "A–Z를 눌러 심어 보세요";
+      ph.textContent = "A〜Zを押して植えてみてください";
       d.appendChild(ph);
     } else {
       const lines = seq.split("\n");
@@ -366,13 +366,13 @@
   }
 
   function resetSoil() {
-    if (!window.confirm("지금 키우던 다육이를 모두 갈아엎고 처음부터 다시 심을까요?")) return;
+    if (!window.confirm("いま育てている多肉をすべて掘り返して、最初から植え直しますか？")) return;
     closeOverlay($("drawer"), true);
     if (gardenActive) exitGarden(true);
     store.del("plant");
     restoreOwnPlant("");
     updateDataLog(0, 90, false);
-    toast("흙을 갈아엎었어요");
+    toast("土を掘り返しました");
   }
 
   // =====================================================================
@@ -387,16 +387,16 @@
   }
 
   function openSend() {
-    if (gardenActive) { toast("내 다육이로 돌아간 뒤에 심을 수 있어요"); return; }
+    if (gardenActive) { toast("自分の多肉に戻ってから植えられます"); return; }
     const seq = fullSequence();
-    if (!visibleText(seq)) { toast("먼저 글자를 쳐서 다육이를 키워 주세요"); return; }
+    if (!visibleText(seq)) { toast("まず文字を打って、多肉を育ててください"); return; }
     $("send-preview").innerHTML = previewHTML(seq);
     $("send-name").value = store.get("name", "");
     $("send-status").textContent = "";
     $("send-status").className = "";
     const btn = $("send-confirm");
     btn.disabled = false;
-    btn.textContent = "심기";
+    btn.textContent = "植える";
     btn.dataset.mode = "send";
     openOverlay($("send-sheet"));
   }
@@ -420,7 +420,7 @@
 
     const status = $("send-status");
     btn.disabled = true;
-    btn.textContent = "심는 중…";
+    btn.textContent = "植えています…";
     status.className = "";
     status.textContent = "";
 
@@ -457,14 +457,14 @@
       store.set("last-sent", entry.t);
       status.className = "ok";
       status.textContent = ENDPOINT
-        ? "정원에 심었어요."
-        : "연습 모드라 이 기기에만 심었어요. (config.js에 시트 주소를 넣으면 모두에게 보여요)";
-      btn.textContent = "정원 보러 가기";
+        ? "庭に植えました。"
+        : "練習モードのため、この端末にだけ植えました。（config.js にシートのURLを入れると、みんなに表示されます）";
+      btn.textContent = "庭を見にいく";
       btn.dataset.mode = "goto";
     } else {
       status.className = "err";
-      status.textContent = "보내지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요.";
-      btn.textContent = "다시 심기";
+      status.textContent = "送信できませんでした。インターネット接続を確認して、もう一度押してください。";
+      btn.textContent = "もう一度植える";
     }
   }
 
@@ -532,16 +532,16 @@
     resetRuntimeState();
     lastVisualSequence = "";
 
-    $("garden-count").textContent = picked.length ? `${picked.length}그루` : "";
+    $("garden-count").textContent = picked.length ? `${picked.length}株` : "";
     if (!picked.length) {
       setGardenNote(
-        `아직 심어진 다육이가 없어요.<br>내 다육이로 돌아가 <b>정원에 심기</b>를 눌러 첫 번째로 심어 보세요.` +
-        (ENDPOINT ? "" : `<small>연습 모드 — config.js에 시트 주소를 넣으면 모두의 다육이가 모여요.</small>`)
+        `まだ植えられた多肉はありません。<br>自分の多肉に戻って<b>庭に植える</b>を押し、最初の一株を植えてみてください。` +
+        (ENDPOINT ? "" : `<small>練習モード — config.js にシートのURLを入れると、みんなの多肉が集まります。</small>`)
       );
       renderGardenList();
       return;
     }
-    setGardenNote(ENDPOINT ? "" : `<small>연습 모드 — 이 기기에서 심은 것만 보여요. config.js에 시트 주소를 넣으면 모두의 다육이가 모여요.</small>`);
+    setGardenNote(ENDPOINT ? "" : `<small>練習モード — この端末で植えたものだけが表示されます。config.js にシートのURLを入れると、みんなの多肉が集まります。</small>`);
 
     // 사람마다 한 줄(혹은 여러 줄)씩 나란히: 엔진의 "줄 바꿈"을 그대로 이용
     let seq = "";
@@ -590,7 +590,7 @@
     tag.style.top = `${START_Y + 260}px`;
     const n = document.createElement("span");
     n.className = "who";
-    n.textContent = e.name || "이름 없음";
+    n.textContent = e.name || "名前なし";
     const t = document.createElement("span");
     t.className = "what";
     t.textContent = e.text.replace(/\n/g, " / ");
@@ -609,10 +609,10 @@
   function timeAgo(t) {
     const d = (Date.now() - new Date(t).getTime()) / 1000;
     if (!isFinite(d)) return "";
-    if (d < 60) return "방금";
-    if (d < 3600) return `${Math.floor(d / 60)}분 전`;
-    if (d < 86400) return `${Math.floor(d / 3600)}시간 전`;
-    return `${Math.floor(d / 86400)}일 전`;
+    if (d < 60) return "たった今";
+    if (d < 3600) return `${Math.floor(d / 60)}分前`;
+    if (d < 86400) return `${Math.floor(d / 3600)}時間前`;
+    return `${Math.floor(d / 86400)}日前`;
   }
 
   function renderGardenList() {
@@ -621,7 +621,7 @@
     if (!gardenEntriesShown.length) {
       const li = document.createElement("li");
       li.className = "empty";
-      li.textContent = "아직 아무도 심지 않았어요.";
+      li.textContent = "まだ誰も植えていません。";
       ul.appendChild(li);
       return;
     }
@@ -631,7 +631,7 @@
       b.type = "button";
       const who = document.createElement("span");
       who.className = "who";
-      who.textContent = e.name || "이름 없음";
+      who.textContent = e.name || "名前なし";
       const when = document.createElement("span");
       when.className = "when";
       when.textContent = timeAgo(e.t);
@@ -658,7 +658,7 @@
   }
 
   async function refreshGarden(showLoading) {
-    if (showLoading) setGardenNote("정원을 불러오는 중…");
+    if (showLoading) setGardenNote("庭を読み込んでいます…");
     try {
       const entries = await loadGardenEntries();
       if (!gardenActive) return;
@@ -673,8 +673,8 @@
       if (!gardenActive) return;
       const hasCache = gardenEntriesShown.length > 0;
       setGardenNote(hasCache
-        ? "새 다육이를 불러오지 못해 저장해 둔 정원을 보여주고 있어요. <b>새로 고침</b>으로 다시 시도해 보세요."
-        : "정원을 불러오지 못했어요. 인터넷 연결을 확인하고 <b>새로 고침</b>을 눌러 주세요.");
+        ? "新しい多肉を読み込めなかったため、保存してある庭を表示しています。<b>更新</b>でもう一度試してください。"
+        : "庭を読み込めませんでした。インターネット接続を確認して、<b>更新</b>を押してください。");
     }
   }
   refreshGarden.lastSig = "";
