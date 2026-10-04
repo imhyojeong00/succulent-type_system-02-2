@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <title>Succulent Type System — 임효정</title>
+  <meta name="description" content="다육식물 26종을 A–Z에 배정한 타이핑 시스템. 각자의 기기에서 키운 다육이를 모두의 정원에 심어 주세요.">
+
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./app.css">
+
+  <!-- 순서 중요: config → (소리 데이터) → 본체 → 모바일/정원 UI -->
+  <script src="./config.js" defer></script>
+  <script src="./audio-data.js" async></script>
+  <script src="./script.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+
+<body>
+  <div id="intro-veil"></div>
+
+  <!-- 상단 바 -->
+  <header id="top-bar">
+    <button id="menu-btn" class="icon-btn" type="button" aria-label="메뉴 열기" aria-controls="drawer" aria-expanded="false">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>
+    </button>
+    <div id="garden-title" hidden>
+      <span>모두의 정원</span>
+      <span id="garden-count"></span>
+    </div>
+    <button id="garden-btn" class="pill" type="button">모두의 정원</button>
+    <button id="garden-exit" class="pill" type="button" hidden>내 다육이로</button>
+  </header>
+
+  <button id="coord-toggle" aria-label="좌표 보기" title="Coordinate">⊕</button>
+
+  <!-- 입력 영역 (모바일에서는 하단 자판이 됨) -->
+  <div id="ui-layer">
+    <div id="type-row">
+      <input
+        type="text"
+        id="succulent-input"
+        placeholder="TYPE A-Z / 0-9 (ENTER = NEW LINE)"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="characters"
+        spellcheck="false"
+        enterkeyhint="enter"
+        aria-label="다육 글자 입력"
+      >
+      <div id="type-display" aria-live="polite"></div>
+      <button id="send-btn" class="pill green" type="button" disabled>정원에 심기</button>
+    </div>
+
+    <div id="data-log">
+      <span>DIST: <span id="dist-val">-</span></span>
+      <span>|</span>
+      <span>ANGLE: <span id="angle-val">-</span></span>
+      <button id="decode-btn">[MUTANT VIEW]</button>
+      <button id="kbd-toggle" type="button" aria-label="자판 접기">자판 접기</button>
+    </div>
+
+    <div id="kbd" role="group" aria-label="다육 자판"></div>
+  </div>
+
+  <div id="utility-layer">
+    <button id="growth-map-btn" title="Growth Map">☷</button>
+    <button id="growth-xray-btn" title="Growth X-Ray">⌁</button>
+    <button id="receipt-btn" title="Receipt">▤</button>
+    <button id="save-btn" title="Save">↓</button>
+  </div>
+
+  <div id="growth-map-panel">
+    <div id="growth-map-header">
+      <span>GENETIC GROWTH MAP</span>
+      <button id="growth-map-close">×</button>
+    </div>
+    <svg id="growth-map-svg" viewBox="0 0 520 520"></svg>
+  </div>
+
+  <div id="receipt-panel">
+    <div id="receipt-header">
+      <span>CLUSTER RECEIPT</span>
+      <button id="receipt-close">×</button>
+    </div>
+    <pre id="receipt-content"></pre>
+    <button id="receipt-download">[DOWNLOAD TXT]</button>
+  </div>
+
+  <!-- 정원 보기 하단 도구 -->
+  <div id="garden-dock" hidden>
+    <div class="garden-zoom">
+      <button id="garden-zoom-out" class="icon-btn" type="button" aria-label="멀리 보기">−</button>
+      <button id="garden-zoom-in" class="icon-btn" type="button" aria-label="가까이 보기">+</button>
+    </div>
+    <button id="garden-list-btn" class="pill" type="button">심은 사람들</button>
+    <button id="garden-refresh" class="pill" type="button">새로 고침</button>
+  </div>
+  <div id="garden-note" hidden></div>
+
+  <!-- 메뉴 (옆 목록) -->
+  <div id="scrim" hidden></div>
+  <nav id="drawer" class="app-overlay" aria-label="메뉴" aria-hidden="true">
+    <div class="drawer-head">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="drawer-title">Succulent Type System</span>
+      <button class="close-x" type="button" data-close aria-label="메뉴 닫기">×</button>
+    </div>
+    <div class="drawer-group">
+      <button type="button" data-act="about">작업 소개</button>
+      <button type="button" data-act="garden">모두의 정원</button>
+      <button type="button" data-act="send">정원에 심기</button>
+    </div>
+    <div class="drawer-group">
+      <button type="button" data-act="map">성장 지도</button>
+      <button type="button" data-act="xray">엑스레이</button>
+      <button type="button" data-act="mutant">변이만 보기</button>
+      <button type="button" data-act="coord">좌표</button>
+      <button type="button" data-act="receipt">영수증</button>
+      <button type="button" data-act="save">이미지 저장</button>
+    </div>
+    <div class="drawer-group">
+      <button type="button" data-act="sound">소리 끄기</button>
+      <button type="button" data-act="reset">처음부터 다시 심기</button>
+    </div>
+    <div class="drawer-foot">
+      임효정<br>
+      <a href="https://www.instagram.com/jijibae.o/" target="_blank" rel="noopener">@jijibae.o</a><br>
+      <a href="mailto:imhyojeong050@gmail.com">imhyojeong050@gmail.com</a>
+    </div>
+  </nav>
+
+  <!-- 작업 소개 팝업 -->
+  <section id="about" class="app-overlay modal" role="dialog" aria-modal="true" aria-labelledby="about-title" aria-hidden="true">
+    <div class="modal-card about-card">
+      <button class="close-x" type="button" data-close aria-label="소개 닫기">×</button>
+      <span class="dot" aria-hidden="true"></span>
+      <h1 id="about-title">Succulent Type System</h1>
+      <p class="about-sub">다육 타이핑 시스템</p>
+
+      <p>다육식물은 여러 지역에서 동시에 생겨나, 접목과 탈락을 거치며 살아남았습니다. 이 사이트는 다육식물 26종을 생장점 모양으로 나누어 A부터 Z까지 하나씩 배정한 글자 시스템입니다.</p>
+      <p>글자를 치면 앞 글자와 지금 글자 사이의 계보상 거리가 기울기가 되어 식물이 자랍니다. 그 사이로 AI가 만든, 실재하지 않는 접목 개체가 끼어들어 분류에 오류를 냅니다.</p>
+
+      <ol class="about-steps">
+        <li>아래 자판으로 알파벳을 쳐 보세요. 줄을 바꾸면 옆에 새 줄기가 납니다.</li>
+        <li>이 다육이는 서버가 아니라 지금 이 기기 안에서만 자랍니다. 방문 기록을 지우면 탈락합니다.</li>
+        <li><b>정원에 심기</b>를 누르면 모두의 정원으로 옮겨 심어져, 다른 사람들의 다육이와 함께 하나의 생태계가 됩니다.</li>
+      </ol>
+
+      <div class="about-maker">
+        <p>안녕하세요, 한국 계원예술대학교 심화과정에서 공부하는 임효정입니다. 저는 한국에 있지만, 일본으로 떠난 친구들에게 이 웹을 실어 보냈습니다. 가장 멀리 떨어진 것들을 잇는 데서 예술이 시작된다고 믿기 때문입니다.</p>
+        <p class="about-links">
+          <a href="https://www.instagram.com/jijibae.o/" target="_blank" rel="noopener">Instagram @jijibae.o</a>
+          <a href="mailto:imhyojeong050@gmail.com">imhyojeong050@gmail.com</a>
+        </p>
+      </div>
+
+      <button id="about-start" class="pill green wide" type="button" data-close>심으러 가기</button>
+    </div>
+  </section>
+
+  <!-- 정원에 심기 -->
+  <section id="send-sheet" class="app-overlay modal" role="dialog" aria-modal="true" aria-labelledby="send-title" aria-hidden="true">
+    <div class="modal-card send-card">
+      <button class="close-x" type="button" data-close aria-label="닫기">×</button>
+      <h2 id="send-title">정원에 심기</h2>
+      <p class="muted">지금까지 친 글자가 모두의 정원으로 옮겨 심어집니다. 다른 방문자들도 볼 수 있어요.</p>
+      <div id="send-preview" class="specimen"></div>
+      <label class="field">
+        <span>이름 (선택)</span>
+        <input id="send-name" type="text" maxlength="20" placeholder="이름이나 @인스타그램" autocomplete="off">
+      </label>
+      <button id="send-confirm" class="pill green wide" type="button">심기</button>
+      <p id="send-status" role="status"></p>
+    </div>
+  </section>
+
+  <!-- 정원: 심은 사람들 목록 -->
+  <aside id="garden-list" class="app-overlay" aria-hidden="true" aria-labelledby="garden-list-title">
+    <div class="drawer-head">
+      <span class="drawer-title" id="garden-list-title">심은 사람들</span>
+      <button class="close-x" type="button" data-close aria-label="목록 닫기">×</button>
+    </div>
+    <ul id="garden-list-items"></ul>
+  </aside>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <div id="render-stage">
+    <svg id="growth-branch-layer"></svg>
+    <div id="coord-layer"></div>
+  </div>
+</body>
+</html>

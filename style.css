@@ -1,0 +1,637 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff;
+  overflow: auto;
+}
+
+/* 로딩 중 화면을 부드럽게 덮어두는 흰 막 — 준비되면 서서히 걷힘.
+   전시 상황에서 첫인상이 "뿅" 하고 나타나지 않도록 하는 최소한의 장치. */
+#intro-veil {
+  position: fixed;
+  inset: 0;
+  background: #ffffff;
+  z-index: 20000000;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 1.1s ease;
+}
+#intro-veil.veil-hidden {
+  opacity: 0;
+}
+
+#render-stage {
+  position: relative;
+  width: 50000px;
+  height: 50000px;
+  background-color: #ffffff;
+}
+
+#coord-toggle {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+  color: rgba(0, 0, 0, 0.42);
+  font-size: 19px;
+  font-weight: 100;
+  line-height: 1;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  cursor: pointer;
+  z-index: 10000003;
+  transition: opacity 0.2s, transform 0.2s, color 0.2s;
+}
+
+#coord-toggle:hover {
+  color: rgba(0, 0, 0, 0.72);
+  transform: scale(1.04);
+}
+
+#coord-toggle.active {
+  color: rgba(60, 150, 80, 0.72);
+}
+
+#coord-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50000px;
+  height: 50000px;
+  pointer-events: none;
+  z-index: 100;
+  display: none;
+}
+
+#coord-layer.show {
+  display: block;
+}
+
+.coord-line {
+  position: absolute;
+  background: rgba(60, 150, 80, 0.16);
+  z-index: 101;
+}
+
+.coord-line.vertical {
+  width: 1px;
+  height: 50000px;
+}
+
+.coord-line.horizontal {
+  width: 50000px;
+  height: 1px;
+}
+
+.coord-axis {
+  background: rgba(60, 150, 80, 0.45);
+}
+
+.coord-label {
+  position: absolute;
+  color: rgba(60, 150, 80, 0.62);
+  font-size: 9px;
+  font-family: "Courier New", monospace;
+  user-select: none;
+  z-index: 102;
+}
+
+#ui-layer {
+  position: fixed;
+  bottom: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000000;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(4px);
+  padding: 10px 20px;
+  border-radius: 30px;
+}
+
+input {
+  background: transparent;
+  border: none;
+  color: #000000;
+  font-size: 1.22rem;
+  outline: none;
+  width: 250px;
+  text-align: center;
+  font-family: "Courier New", monospace;
+  letter-spacing: 1px;
+}
+
+#data-log {
+  font-size: 11px;
+  color: #888888;
+  margin-top: 5px;
+  font-family: "Courier New", monospace;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 12px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+#decode-btn,
+#receipt-close,
+#receipt-download,
+#growth-map-close {
+  background: transparent;
+  border: none;
+  color: #888888;
+  font-size: 11px;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.2s;
+  font-family: "Courier New", monospace;
+}
+
+#decode-btn:hover,
+#receipt-close:hover,
+#receipt-download:hover,
+#growth-map-close:hover {
+  color: #000000;
+  text-decoration: underline;
+}
+
+#utility-layer {
+  position: fixed;
+  right: 28px;
+  bottom: 34px;
+  z-index: 10000003;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+#utility-layer button {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: rgba(0, 0, 0, 0.38);
+  font-size: 17px;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-weight: 100;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s, transform 0.2s, opacity 0.2s;
+}
+
+#utility-layer button:hover {
+  color: rgba(0, 0, 0, 0.72);
+  transform: translateY(-1px);
+}
+
+#growth-map-btn.active,
+#growth-xray-btn.active {
+  color: rgba(60, 150, 80, 0.82);
+}
+
+#growth-map-panel {
+  position: fixed;
+  top: 24px;
+  left: 64px;
+  width: 420px;
+  height: 456px;
+  z-index: 10000004;
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(60, 150, 80, 0.15);
+  border-radius: 14px;
+  padding: 12px;
+  display: none;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.06);
+}
+
+#growth-map-panel.show {
+  display: block;
+}
+
+#growth-map-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.72);
+  margin-bottom: 8px;
+}
+
+#growth-map-svg {
+  width: 100%;
+  height: 410px;
+  overflow: visible;
+}
+
+#growth-map-svg line,
+#growth-map-svg path {
+  stroke: rgba(60, 150, 80, 0.42);
+  stroke-width: 1.15;
+  fill: none;
+}
+
+#growth-map-svg circle {
+  fill: rgba(60, 150, 80, 0.84);
+}
+
+#growth-map-svg text {
+  fill: rgba(60, 150, 80, 0.78);
+  font-size: 11px;
+  font-family: "Courier New", monospace;
+}
+
+#receipt-panel {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  width: 360px;
+  max-height: 78vh;
+  z-index: 10000004;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  padding: 14px;
+  display: none;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.06);
+}
+
+#receipt-panel.show {
+  display: block;
+}
+
+#receipt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.72);
+  margin-bottom: 10px;
+}
+
+#receipt-content {
+  max-height: 58vh;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-size: 10px;
+  line-height: 1.55;
+  color: rgba(0, 0, 0, 0.72);
+  font-family: "Courier New", monospace;
+}
+
+#receipt-download {
+  margin-top: 10px;
+  font-size: 10px;
+  color: rgba(60, 150, 80, 0.8);
+}
+
+/* =======================================================
+   숫자 - 다육이 성장 위치 주변 땅바닥에 눌러 놓인 것처럼 배치됨
+   (별도 레이어가 아니라 #render-stage 위에 직접 놓임)
+   ======================================================= */
+
+.number-node {
+  pointer-events: none;
+}
+
+.number-node img {
+  display: block;
+  pointer-events: none;
+}
+
+.succulent-node {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.succulent-node img {
+  display: block;
+  width: auto;
+  height: auto;
+}
+
+/* =======================================================
+   은은하게 살아있는 idle 움직임 — 타이핑 등장 자체는 담백하게 그대로 두고,
+   이미 화면에 자리 잡은 모든 개체가 해파리처럼 천천히, 미세하게 계속 일렁임.
+   같은 생장 타입(속/genus)은 같은 리듬 "계열"을 공유하되, 개체마다 animation-delay가
+   달라서(script.js에서 랜덤 지정) 서로 안 맞춰 움직임 — 그래서 더 기괴하고 신비로운 느낌.
+   진폭을 아주 작게, 완만한 곡선(ease-in-out)으로만 둬서 장난스럽지 않게 함.
+   ======================================================= */
+
+@keyframes idleBloom {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  33%      { transform: scale(1.018) rotate(0.6deg); }
+  67%      { transform: scale(0.986) rotate(-0.5deg); }
+}
+.idle-bloom {
+  animation-name: idleBloom;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  transform-origin: 50% 62%;
+}
+
+@keyframes idleRise {
+  0%, 100% { transform: scaleY(1) skewX(0deg); }
+  40%      { transform: scaleY(1.014) skewX(0.35deg); }
+  75%      { transform: scaleY(0.99) skewX(-0.3deg); }
+}
+.idle-rise {
+  animation-name: idleRise;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  transform-origin: 50% 100%;
+}
+
+@keyframes idleCreep {
+  0%, 100% { transform: translateX(0) skewX(0deg); }
+  45%      { transform: translateX(0.5%) skewX(0.5deg); }
+  80%      { transform: translateX(-0.4%) skewX(-0.35deg); }
+}
+.idle-creep {
+  animation-name: idleCreep;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  transform-origin: 50% 55%;
+}
+
+@keyframes idlePop {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.02); }
+}
+.idle-pop {
+  animation-name: idlePop;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  transform-origin: center;
+}
+
+@keyframes idleSquish {
+  0%, 100% { transform: scaleY(1) scaleX(1); }
+  50%      { transform: scaleY(1.016) scaleX(0.988); }
+}
+.idle-squish {
+  animation-name: idleSquish;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  transform-origin: 50% 100%;
+}
+
+@keyframes idleSway {
+  0%, 100% { transform: rotate(0deg); }
+  35%      { transform: rotate(0.9deg); }
+  70%      { transform: rotate(-0.7deg); }
+}
+.idle-sway {
+  animation-name: idleSway;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  transform-origin: 50% 82%;
+}
+
+.only-mutant-view .normal-type {
+  opacity: 0;
+  filter: blur(5px);
+}
+
+.only-mutant-view .mutant-type {
+  opacity: 1;
+}
+
+.hide-succulent .succulent-node img {
+  opacity: 0;
+}
+
+.growth-skeleton {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 190px;
+  height: 190px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  display: none;
+  overflow: visible;
+  z-index: 10000;
+}
+
+.growth-skeleton path,
+.growth-skeleton line,
+.growth-skeleton circle,
+.growth-skeleton ellipse {
+  stroke: rgba(60, 150, 80, 0.78);
+  stroke-width: 1.35;
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.growth-skeleton .growth-point {
+  fill: rgba(60, 150, 80, 0.98);
+  stroke: none;
+}
+
+/* =======================================================
+   GREEN X-RAY VISUAL STABILIZATION (WITH INLINE INTERCEPT)
+   ======================================================= */
+
+/* 자바스크립트의 인라인 스타일(display: block)을 완벽하게 덮어쓰고 컬러 이미지를 완전 숨김 처리 */
+body.xray-active .succulent-node,
+body.xray-active .succulent-node img {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+/* 엑스레이 전용 드로잉 보드가 최상단 레이어에서 선명하게 보이도록 설정 */
+body.xray-active #growth-branch-layer {
+  display: block !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50000px;
+  height: 50000px;
+  pointer-events: none;
+  z-index: 9999999 !important;
+  overflow: visible;
+}
+
+/* 수학적 기하학 뼈대 구조선들이 흐려지지 않고 균일한 초록빛 테두리를 띠도록 지정 */
+#growth-branch-layer path,
+#growth-branch-layer line,
+#growth-branch-layer ellipse,
+#growth-branch-layer circle {
+  fill: none !important;
+  stroke: rgb(60, 150, 80) !important;
+  stroke-width: 1.5px !important;
+  vector-effect: non-scaling-stroke !important;
+}
+
+/* L-system 구조 상 성장의 결절점이 되는 내부 코어 점들을 초록색 면으로 가득 채움 */
+#growth-branch-layer .growth-dot {
+  fill: rgb(60, 150, 80) !important;
+  stroke: none !important;
+}
+
+/* =======================================================
+   X-RAY 속(genus)별 색조 구분 — 기본 초록을 유지하되, 같은 생장 타입끼리는
+   같은 색조 각도로 통일되고 서로 다른 타입끼리는 색이 갈라져 구분됨
+   (GENUS_STYLE의 hue 값과 대응. 다운로드용 PNG에도 인라인으로 복사되어 유지됨)
+   ======================================================= */
+#growth-branch-layer .xray-hue-0   { filter: hue-rotate(0deg); }
+#growth-branch-layer .xray-hue-26  { filter: hue-rotate(26deg); }
+#growth-branch-layer .xray-hue-51  { filter: hue-rotate(51deg); }
+#growth-branch-layer .xray-hue-77  { filter: hue-rotate(77deg); }
+#growth-branch-layer .xray-hue-103 { filter: hue-rotate(103deg); }
+#growth-branch-layer .xray-hue-129 { filter: hue-rotate(129deg); }
+#growth-branch-layer .xray-hue-154 { filter: hue-rotate(154deg); }
+#growth-branch-layer .xray-hue-180 { filter: hue-rotate(180deg); }
+#growth-branch-layer .xray-hue-206 { filter: hue-rotate(206deg); }
+#growth-branch-layer .xray-hue-231 { filter: hue-rotate(231deg); }
+#growth-branch-layer .xray-hue-257 { filter: hue-rotate(257deg); }
+#growth-branch-layer .xray-hue-283 { filter: hue-rotate(283deg); }
+#growth-branch-layer .xray-hue-309 { filter: hue-rotate(309deg); }
+#growth-branch-layer .xray-hue-334 { filter: hue-rotate(334deg); }/* =======================================================
+   JUNGLE LAYER
+   ======================================================= */
+
+/* 동반종 노드: 크기는 JS에서 지정, 생장점(●) 기준으로 회전/굴광 */
+.succulent-node.jungle-node {
+  display: block;
+}
+.jungle-node .jungle-sprout,
+.jungle-node img {
+  display: block;
+}
+
+/* 생장점에서 돋아남 — 덤불/솟는 종: 점에서 부풀어 오름 */
+@keyframes sproutIn {
+  0%   { transform: scale(0.04) rotate(-8deg); opacity: 0; }
+  18%  { opacity: 1; }
+  70%  { transform: scale(1.035) rotate(0.8deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+.jungle-sprout.sprout-in {
+  animation-name: sproutIn;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation-fill-mode: both;
+}
+
+/* 늘어지는 종: 생장점에서 아래로 풀려 내려옴 */
+@keyframes unfurl {
+  0%   { transform: scaleY(0.03) scaleX(0.55); opacity: 0; }
+  15%  { opacity: 1; }
+  72%  { transform: scaleY(1.04) scaleX(1); }
+  100% { transform: scaleY(1) scaleX(1); opacity: 1; }
+}
+.jungle-sprout.unfurl {
+  animation-name: unfurl;
+  animation-timing-function: cubic-bezier(0.22, 0.9, 0.25, 1);
+  animation-fill-mode: both;
+}
+
+/* 늘어진 줄기의 아주 느린 진자 운동 (생장점이 축) */
+@keyframes idleHang {
+  0%, 100% { transform: rotate(0deg) skewX(0deg); }
+  30%      { transform: rotate(1.3deg) skewX(0.4deg); }
+  70%      { transform: rotate(-1.1deg) skewX(-0.3deg); }
+}
+.idle-hang {
+  animation-name: idleHang;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+/* 스스로 번식한 개체는 한 겹 뒤의 하층 식생처럼 살짝 물러나 보임 */
+.jungle-overgrowth {
+  opacity: 0.9;
+}
+
+/* 수관(canopy) 그늘 — 화면 위에 아주 옅게 드리운, 천천히 흘러가는 잎 그늘.
+   식물 위, 입력창 아래 층. X-ray에서는 꺼짐. 싫으면 이 블록만 지우면 됨 */
+#canopy-shade {
+  position: fixed;
+  inset: -12vmax;
+  z-index: 9000000;
+  pointer-events: none;
+  background:
+    radial-gradient(38vmax 30vmax at 18% 22%, rgba(74, 104, 66, 0.075), transparent 70%),
+    radial-gradient(30vmax 26vmax at 78% 16%, rgba(74, 104, 66, 0.06), transparent 70%),
+    radial-gradient(34vmax 28vmax at 64% 82%, rgba(74, 104, 66, 0.055), transparent 70%),
+    radial-gradient(120vmax 90vmax at 50% 45%, transparent 62%, rgba(40, 62, 38, 0.055) 100%);
+  animation: canopyDrift 46s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes canopyDrift {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50%  { transform: translate3d(2.5vmax, -1.5vmax, 0) rotate(1.2deg); }
+  100% { transform: translate3d(-2vmax, 1.8vmax, 0) rotate(-0.8deg); }
+}
+body.xray-active #canopy-shade {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #canopy-shade,
+  .idle-hang,
+  .jungle-sprout.sprout-in,
+  .jungle-sprout.unfurl {
+    animation: none;
+  }
+}
+
+/* =======================================================
+   PETAL FALL — 꽃이 떨어지는 식물(N-04)과 꽃 층
+   ======================================================= */
+.jungle-body {
+  position: relative;
+}
+.succulent-node .jungle-blossom {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+/* 떨어진 자리: 연출 없이 바로 비고, 다시 필 때도 바로 나타남 */
+.succulent-node .jungle-blossom.fallen {
+  visibility: hidden;
+}
+
+/* 공중에 날리는 꽃 — 화면에 고정된 캔버스 (무대 좌표를 스크롤만큼 옮겨 그림) */
+#petal-air {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9500000;
+  pointer-events: none;
+}
+/* 바닥에 쌓인 꽃 — 무대 안, 타이핑 시작점 바닥에 붙어 있음 (아래로 스크롤해야 보임) */
+#petal-pile {
+  position: absolute;
+  z-index: 400000;
+  pointer-events: none;
+}
+body.xray-active #petal-air,
+body.xray-active #petal-pile {
+  display: none;
+}
+
+/* 추가 식물 X-ray 선 굵기 (기본 1.5px 규칙보다 우선) — 굵은 축/가는 곁가지/털 가시 구분 */
+#growth-branch-layer path.cx-w05 { stroke-width: 0.5px !important; }
+#growth-branch-layer path.cx-w08 { stroke-width: 0.8px !important; }
+#growth-branch-layer path.cx-w12 { stroke-width: 1.15px !important; }
+#growth-branch-layer path.cx-w16 { stroke-width: 1.6px !important; }
+/* X-ray 색은 전부 같은 초록 */
+#growth-branch-layer .xray-genus { filter: none !important; }
