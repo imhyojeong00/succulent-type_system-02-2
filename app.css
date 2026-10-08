@@ -215,6 +215,15 @@ button { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent
   color: var(--ink-2);
 }
 .drawer-foot a, .about-links a { color: var(--green); text-decoration: none; border-bottom: 1px solid var(--green-soft); }
+.webring {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--line);
+}
+.webring a { align-self: flex-start; }
 
 /* ---------- 팝업 (작업 소개 / 정원에 심기) ---------- */
 .modal {
