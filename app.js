@@ -153,8 +153,38 @@
   const bi = (ja, ko) => `${ja}<span class="ko">${ko}</span>`;
 
   function syncXrayBar() {
+    const on = document.body.classList.contains("xray-active");
     const b = document.getElementById("xray-bar-btn");
-    if (b) b.setAttribute("aria-pressed", String(document.body.classList.contains("xray-active")));
+    if (b) b.setAttribute("aria-pressed", String(on));
+    if (on) dismissXrayHint();
+  }
+
+  let hintDone = !!store.get("xray-hint-done", false);
+  function placeXrayHint() {
+    const hint = $("xray-hint");
+    const btn = $("xray-bar-btn");
+    const bar = $("ui-layer");
+    if (!hint || !btn || !bar || hint.hidden) return;
+    const b = btn.getBoundingClientRect();
+    const l = bar.getBoundingClientRect();
+    const w = hint.offsetWidth;
+    const center = b.left + b.width / 2;
+    const left = Math.max(8, Math.min(window.innerWidth - w - 8, center - w / 2));
+    hint.style.left = `${left - l.left}px`;
+    hint.style.setProperty("--arrow-x", `${center - left}px`);
+  }
+  function showXrayHint() {
+    if (hintDone || gardenActive || document.body.classList.contains("xray-active")) return;
+    const hint = $("xray-hint");
+    if (!hint || !hint.hidden) return;
+    hint.hidden = false;
+    placeXrayHint();
+  }
+  function dismissXrayHint() {
+    hintDone = true;
+    store.set("xray-hint-done", true);
+    const hint = $("xray-hint");
+    if (hint) hint.hidden = true;
   }
 
   function toast(msg, ms = 2600) {
@@ -374,10 +404,11 @@
   }
 
   let saveTimer = null;
-  window.onSequenceChange = () => {
+  window.onSequenceChange = (seq) => {
     if (gardenActive) return;
     renderDisplay();
     updateSendState();
+    if (!hintDone && visibleText(seq || "").length >= 3) showXrayHint();
     clearTimeout(saveTimer);
     saveTimer = setTimeout(() => {
       store.set("plant", { committed: committedSequence, current: currentInputSnapshot, t: Date.now() });
@@ -776,6 +807,11 @@
   }
 
   function wire() {
+    $("xray-hint-close").addEventListener("click", (e) => {
+      e.stopPropagation();
+      dismissXrayHint();
+    });
+    window.addEventListener("resize", placeXrayHint);
     if (TOUCH) setupPinch();
     if (TOUCH) {
       buildKeyboard();
