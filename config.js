@@ -1,0 +1,1 @@
+window.GARDEN_ENDPOINT = "https://script.google.com/macros/s/AKfycbz3t5yL40oQz6HeoSzHJPi0MVSwCCUvkpqszWn8wAII_fl4Okc-BBoxW87fFZEWxQyehQ/exec";
